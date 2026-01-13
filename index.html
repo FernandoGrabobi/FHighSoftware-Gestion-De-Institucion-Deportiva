@@ -3,94 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Control - C.S. y D. Comercio</title>
+    <title>Sistema de Gestión - C.S. y D. Comercio</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Librerías de Exportación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
         :root {
             --verde-club: #1d8348;
-            --verde-claro: #2ecc71;
+            --verde-oscuro: #145a32;
         }
         .bg-club { background-color: var(--verde-club); }
         .text-club { color: var(--verde-club); }
+        .border-club { border-color: var(--verde-club); }
+        .hover-club:hover { background-color: var(--verde-oscuro); }
+        .sidebar-link { transition: all 0.3s; border-radius: 0.5rem; margin: 0.25rem 0.75rem; }
         .sidebar-link:hover { background-color: rgba(255,255,255,0.1); }
+        .sidebar-link.active { background-color: white; color: var(--verde-club); font-weight: bold; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans text-gray-800">
 
     <div class="flex h-screen overflow-hidden">
+        
         <!-- SIDEBAR -->
-        <aside id="sidebar" class="bg-club text-white w-64 flex-shrink-0 hidden md:flex flex-col">
-            <div class="p-4 flex flex-col items-center border-b border-green-700">
-                <img src="URL_DE_TU_LOGO" alt="Logo" class="w-20 h-20 mb-2 rounded-full bg-white p-1">
-                <h1 class="text-sm font-bold text-center">C.S. y D. COMERCIO</h1>
-                <p class="text-xs opacity-75">Gestión de Voley</p>
+        <aside class="bg-club text-white w-72 flex-shrink-0 hidden md:flex flex-col shadow-xl">
+            <div class="p-6 flex flex-col items-center border-b border-green-700">
+                <img src="assets/img/logo.png" alt="Logo Comercio" class="w-24 h-24 mb-3 rounded-full bg-white p-1 shadow-lg">
+                <h1 class="text-sm font-black text-center leading-tight">CLUB SOCIAL Y DEPORTIVO <br>COMERCIO</h1>
+                <span class="text-[10px] uppercase tracking-widest opacity-70 mt-2">Voley - Gestión Interna</span>
             </div>
             
             <nav class="flex-1 overflow-y-auto py-4">
-                <!-- Secciones dinámicas según ROL -->
-                <a href="#" onclick="showSection('planteles')" class="sidebar-link flex items-center px-6 py-3 transition">
-                    <i class="fas fa-users-cog mr-3"></i> Gestión Planteles
+                <a href="#" onclick="showSection('dashboard')" class="sidebar-link flex items-center px-4 py-3 active">
+                    <i class="fas fa-home w-8"></i> Panel Principal
                 </a>
-                <a href="#" onclick="showSection('cuotas')" class="sidebar-link flex items-center px-6 py-3 transition">
-                    <i class="fas fa-file-invoice-dollar mr-3"></i> Cuotas Pendientes
+                <a href="#" onclick="showSection('planteles')" class="sidebar-link flex items-center px-4 py-3">
+                    <i class="fas fa-users-cog w-8"></i> Gestión de Planteles
                 </a>
-                <a href="#" onclick="showSection('entrenadores')" class="sidebar-link flex items-center px-6 py-3 transition">
-                    <i class="fas fa-user-tie mr-3"></i> Entrenadores
+                <a href="#" onclick="showSection('cuotas')" class="sidebar-link flex items-center px-4 py-3">
+                    <i class="fas fa-hand-holding-dollar w-8"></i> Cuotas Pendientes
                 </a>
-                <a href="#" onclick="showSection('historial')" class="sidebar-link flex items-center px-6 py-3 transition">
-                    <i class="fas fa-history mr-3"></i> Historial Pagos
+                <a href="#" onclick="showSection('entrenadores')" class="sidebar-link flex items-center px-4 py-3">
+                    <i class="fas fa-user-tie w-8"></i> Entrenadores
                 </a>
-                <a href="#" onclick="showSection('reportes')" class="sidebar-link flex items-center px-6 py-3 transition">
-                    <i class="fas fa-chart-line mr-3"></i> Reportes
+                <a href="#" onclick="showSection('historial')" class="sidebar-link flex items-center px-4 py-3">
+                    <i class="fas fa-history w-8"></i> Historial de Pagos
                 </a>
-                <a href="#" onclick="showSection('config')" class="sidebar-link flex items-center px-6 py-3 transition mt-auto border-t border-green-700">
-                    <i class="fas fa-cogs mr-3"></i> Actualizar Montos
+                <a href="#" onclick="showSection('reportes')" class="sidebar-link flex items-center px-4 py-3">
+                    <i class="fas fa-chart-bar w-8"></i> Reportes y Estadísticas
+                </a>
+                <div class="mt-8 px-6 text-[10px] uppercase text-green-300 font-bold tracking-widest">Sistema</div>
+                <a href="#" onclick="showSection('config')" class="sidebar-link flex items-center px-4 py-3 text-green-200">
+                    <i class="fas fa-cogs w-8"></i> Actualizar Montos
                 </a>
             </nav>
 
             <div class="p-4 border-t border-green-700">
-                <button class="flex items-center text-sm opacity-80 hover:opacity-100">
+                <button class="flex items-center text-sm opacity-80 hover:opacity-100 transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
                 </button>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto">
-            <!-- Header -->
-            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
-                <button class="md:hidden text-club"><i class="fas fa-bars fa-lg"></i></button>
-                <h2 id="section-title" class="text-xl font-semibold text-gray-700">Panel Principal</h2>
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- HEADER -->
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-8 z-10">
                 <div class="flex items-center">
-                    <span class="text-sm text-gray-500 mr-2" id="user-role">Admin</span>
-                    <div class="w-8 h-8 rounded-full bg-club flex items-center justify-center text-white">
-                        <i class="fas fa-user"></i>
+                    <button class="md:hidden mr-4 text-club"><i class="fas fa-bars fa-lg"></i></button>
+                    <h2 id="section-title" class="text-xl font-bold text-gray-700 uppercase tracking-tight">Panel Principal</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-xs font-bold text-gray-900" id="user-display-name">Administrador General</p>
+                        <p class="text-[10px] text-club font-bold uppercase" id="user-role">Súper Admin</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-club text-white flex items-center justify-center font-bold border-2 border-green-100">
+                        A
                     </div>
                 </div>
             </header>
 
-            <!-- CONTENIDO DINÁMICO -->
-            <div id="content" class="p-6">
-                <!-- Aquí se cargarán las secciones -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
-                        <h3 class="text-gray-500 text-sm uppercase">Socios Activos</h3>
-                        <p class="text-3xl font-bold">124</p>
+            <!-- ZONA DE CONTENIDO DINÁMICO -->
+            <div id="content" class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+                
+                <!-- 1. DASHBOARD / INICIO -->
+                <section id="sec-dashboard">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Socios Activos</p>
+                            <p class="text-3xl font-black" id="dash-jugadores">0</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-yellow-500">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Morosos Mes</p>
+                            <p class="text-3xl font-black text-yellow-600" id="dash-morosos">0</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Ingresos Mes</p>
+                            <p class="text-3xl font-black text-blue-600" id="dash-ingresos">$0</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-club">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Equipos</p>
+                            <p class="text-3xl font-black text-club" id="dash-equipos">0</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
-                        <h3 class="text-gray-500 text-sm uppercase">Pagos Pendientes</h3>
-                        <p class="text-3xl font-bold">18</p>
+                    <div class="bg-club text-white p-8 rounded-2xl shadow-lg flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">¡Bienvenido al sistema!</h3>
+                            <p class="opacity-90">Gestione planteles, cuotas y reportes del Club Comercio.</p>
+                        </div>
+                        <i class="fas fa-volleyball-ball text-6xl opacity-20"></i>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-                        <h3 class="text-gray-500 text-sm uppercase">Recaudación Mes</h3>
-                        <p class="text-3xl font-bold">$240.000</p>
+                </section>
+
+                <!-- 2. GESTIÓN DE PLANTELES -->
+                <section id="sec-planteles" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Equipos del Club</h2>
+                        <button onclick="openModal('modal-equipo')" class="bg-club text-white px-5 py-2 rounded-lg font-bold shadow-md hover-club">
+                            <i class="fas fa-plus mr-2"></i> Nuevo Equipo
+                        </button>
                     </div>
-                </div>
+                    <div id="lista-equipos" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Renderizado desde planteles.js -->
+                    </div>
+                </section>
+
+                <!-- 3. CUOTAS PENDIENTES -->
+                <section id="sec-cuotas" class="hidden">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6 border-b flex justify-between items-center">
+                            <h2 class="text-xl font-bold">Deudores de Cuota Mensual</h2>
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Control de Morosidad</span>
+                        </div>
+                        <div class="p-4 bg-gray-50 flex gap-4">
+                            <select id="filtro-equipo-cuotas" class="border p-2 rounded-lg text-sm bg-white shadow-sm w-64"></select>
+                            <button onclick="cargarCuotasPendientes()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fas fa-sync"></i></button>
+                        </div>
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100 text-[10px] uppercase font-bold text-gray-500">
+                                <tr>
+                                    <th class="p-4">Jugador</th>
+                                    <th class="p-4">Equipo</th>
+                                    <th class="p-4">Beca</th>
+                                    <th class="p-4">Monto con Recargo</th>
+                                    <th class="p-4 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-pendientes" class="text-sm divide-y">
+                                <!-- Renderizado desde app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 4. ENTRENADORES -->
+                <section id="sec-entrenadores" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Cuerpo Técnico</h2>
+                        <button onclick="openModal('modal-entrenador')" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold shadow-md">
+                            <i class="fas fa-user-tie mr-2"></i> Nuevo Entrenador
+                        </button>
+                    </div>
+                    <div id="lista-entrenadores" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Renderizado desde app.js -->
+                    </div>
+                </section>
+
+                <!-- 5. HISTORIAL DE PAGOS -->
+                <section id="sec-historial" class="hidden">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6">Historial de Transacciones</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border">
+                            <input type="text" id="hist-filtro-nombre" placeholder="Buscar jugador..." class="border p-2 rounded-lg text-sm">
+                            <select id="hist-filtro-equipo" class="border p-2 rounded-lg text-sm"></select>
+                            <select id="hist-filtro-metodo" class="border p-2 rounded-lg text-sm">
+                                <option value="">Cualquier Medio</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia">Transferencia</option>
+                            </select>
+                            <button onclick="cargarHistorial()" class="bg-club text-white rounded-lg font-bold hover-club">Filtrar</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-800 text-white uppercase text-[10px]">
+                                    <tr>
+                                        <th class="p-3">Fecha</th>
+                                        <th class="p-3">Jugador</th>
+                                        <th class="p-3">Concepto</th>
+                                        <th class="p-3">Monto</th>
+                                        <th class="p-3">Medio</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-historial-body" class="divide-y">
+                                    <!-- Renderizado desde app.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. REPORTES -->
+                <section id="sec-reportes" class="hidden">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-8 border-club">
+                        <div class="flex justify-between items-start mb-8">
+                            <div>
+                                <h2 class="text-3xl font-black text-gray-800 uppercase italic">Reporte de Caja</h2>
+                                <p class="text-gray-400 font-bold uppercase text-xs tracking-widest">Club Social y Deportivo Comercio</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="exportarPDF()" class="bg-red-500 text-white px-4 py-2 rounded font-bold text-xs"><i class="fas fa-file-pdf mr-1"></i> PDF</button>
+                                <button onclick="exportarExcel()" class="bg-green-700 text-white px-4 py-2 rounded font-bold text-xs"><i class="fas fa-file-excel mr-1"></i> EXCEL</button>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mb-8">
+                            <select id="rep-mes" class="border p-3 rounded-xl flex-1 font-bold">
+                                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                                <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                                <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                            </select>
+                            <button onclick="generarReporte()" class="bg-gray-900 text-white px-8 rounded-xl font-bold">Calcular Mes</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                            <div class="p-6 bg-green-50 rounded-2xl border border-green-200">
+                                <p class="text-[10px] font-black text-green-700 uppercase mb-1">Ingresos de Cuotas</p>
+                                <p id="rep-ingresos" class="text-4xl font-black text-green-900">$0</p>
+                            </div>
+                            <div class="p-6 bg-red-50 rounded-2xl border border-red-200">
+                                <p class="text-[10px] font-black text-red-700 uppercase mb-1">Egresos Entrenadores</p>
+                                <p id="rep-egresos" class="text-4xl font-black text-red-900">$0</p>
+                            </div>
+                            <div class="p-6 bg-gray-900 rounded-2xl text-white shadow-xl">
+                                <p class="text-[10px] font-black text-green-400 uppercase mb-1 tracking-widest">Saldo Neto</p>
+                                <p id="rep-balance" class="text-4xl font-black">$0</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. CONFIGURACIÓN -->
+                <section id="sec-config" class="hidden">
+                    <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl border-t-8 border-club">
+                        <h2 class="text-2xl font-black mb-8">Actualización de Valores</h2>
+                        <form id="form-config" class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-gray-400">Cuota Mensual Base</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-2 font-bold">$</span>
+                                        <input type="number" id="conf-cuota" class="w-full border p-2 pl-8 rounded-lg font-bold text-lg">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-gray-400">Inscripción Anual</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-2 font-bold">$</span>
+                                        <input type="number" id="conf-inscripcion" class="w-full border p-2 pl-8 rounded-lg font-bold text-lg">
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="text-xs font-bold uppercase text-gray-400">Afiliación Federativa</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-2 font-bold">$</span>
+                                        <input type="number" id="conf-afiliacion" class="w-full border p-2 pl-8 rounded-lg font-bold text-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-club text-white py-4 rounded-xl font-black text-lg shadow-lg hover-club transition">GUARDAR NUEVOS PRECIOS</button>
+                        </form>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
 
-    <!-- Scripts de Firebase y lógica personalizada irán aquí -->
+    <!-- MODAL: NUEVO EQUIPO -->
+    <div id="modal-equipo" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-[400px]">
+            <h3 class="text-2xl font-black mb-6 text-club">Crear Plantel</h3>
+            <form id="form-equipo" class="space-y-4">
+                <select id="eq-categoria" class="w-full border-2 p-3 rounded-xl font-bold" required>
+                    <option value="">Categoría...</option>
+                    <option>A1</option><option>A2</option><option>A3</option><option>SUB 14</option>
+                    <option>SUB 16</option><option>SUB 18</option><option>MAXI VOLEY</option>
+                    <option>NEWCOM</option><option>RECREATIVO</option><option>JUEGOS DOCENTES</option>
+                </select>
+                <select id="eq-rama" class="w-full border-2 p-3 rounded-xl font-bold" required>
+                    <option value="">Rama...</option>
+                    <option>MASCULINO</option><option>FEMENINO</option><option>MIXTO</option>
+                </select>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closeModal('modal-equipo')" class="flex-1 text-gray-400 font-bold uppercase text-xs">Cancelar</button>
+                    <button type="submit" class="flex-1 bg-club text-white py-3 rounded-xl font-bold shadow-lg">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO JUGADOR -->
+    <div id="modal-jugador" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-[450px]">
+            <h3 class="text-2xl font-black mb-6 text-club italic">Inscribir Jugador</h3>
+            <form id="form-jugador" class="space-y-4 text-sm">
+                <input type="text" id="jug-nombre" placeholder="Nombre Completo" class="w-full border-2 p-3 rounded-xl font-bold" required>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="jug-dni" placeholder="DNI" class="border-2 p-3 rounded-xl font-bold" required>
+                    <input type="date" id="jug-nacimiento" class="border-2 p-3 rounded-xl font-bold" required>
+                </div>
+                <div class="bg-green-50 p-4 rounded-xl flex items-center justify-between border border-green-100">
+                    <label class="font-bold text-green-800">Beca / Descuento</label>
+                    <div class="flex items-center gap-1">
+                        <input type="number" id="jug-beca" value="0" min="0" max="100" class="w-16 border-2 p-1 rounded-lg text-center font-bold">
+                        <span class="font-bold">%</span>
+                    </div>
+                </div>
+                <select id="jug-equipo" class="w-full border-2 p-3 rounded-xl font-bold" required></select>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closeModal('modal-jugador')" class="flex-1 text-gray-400 font-bold uppercase text-xs tracking-tighter">Cerrar</button>
+                    <button type="submit" class="flex-1 bg-club text-white py-3 rounded-xl font-black shadow-lg uppercase tracking-wider">Confirmar Alta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts Principales -->
+    <script type="module" src="js/app.js"></script>
+
 </body>
 </html>
